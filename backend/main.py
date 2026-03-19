@@ -1,4 +1,3 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
@@ -6,17 +5,8 @@ from routes import public, admin
 from config import get_settings
 from models import Professional
 from database import SessionLocal
-import firebase_admin
-from firebase_admin import credentials
 
 settings = get_settings()
-
-# Inicializar Firebase Admin SDK
-if os.path.exists(settings.firebase_credentials_path):
-    cred = credentials.Certificate(settings.firebase_credentials_path)
-    firebase_admin.initialize_app(cred)
-else:
-    firebase_admin.initialize_app()
 
 app = FastAPI(title="Sistema de Citas", version="1.0.0")
 

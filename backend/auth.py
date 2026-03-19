@@ -4,7 +4,6 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from passlib.hash import bcrypt
 from config import get_settings
-from firebase_admin import auth as firebase_auth
 
 security = HTTPBearer()
 
@@ -23,19 +22,8 @@ def create_access_token(data: dict) -> str:
 def get_current_admin(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> str:
-    """Verifica el token de Firebase y retorna el email del admin."""
-    token = credentials.credentials
-    try:
-        decoded = firebase_auth.verify_id_token(token)
-        email = decoded.get("email")
-        if email is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token sin email")
-        return email
-    except Exception:
-        pass
-
-    # Fallback: verificar JWT propio (compatibilidad)
     settings = get_settings()
+    token = credentials.credentials
     try:
         payload = jwt.decode(
             token,
