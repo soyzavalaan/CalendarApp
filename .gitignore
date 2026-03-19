@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+
+# Entorno
+.env
+*.db
+
+# Firebase credentials (NUNCA subir a git)
+firebase-credentials.json
+
+# Build
+dist/
+build/
+.firebase/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
