@@ -14,6 +14,7 @@ export default function useBooking() {
     service: null,
     date: null,
     time: null,
+    modality: 'presencial',
     patient: { name: '', email: '', phone: '' },
   })
 
@@ -67,6 +68,7 @@ export default function useBooking() {
         patient_phone: selected.patient.phone,
         appointment_date: selected.date,
         appointment_time: selected.time + ':00',
+        modality: selected.modality,
       })
       setResult(data)
       setStep(4) // success
@@ -96,6 +98,10 @@ export default function useBooking() {
     setSelected(s => ({ ...s, patient: { ...s.patient, [field]: value } }))
   }
 
+  const setModality = (modality) => {
+    setSelected(s => ({ ...s, modality }))
+  }
+
   const goBack = () => {
     if (step > 0) setStep(step - 1)
   }
@@ -104,7 +110,7 @@ export default function useBooking() {
     step, setStep, services, availability, slots,
     loading, error, result, selected,
     loadServices, loadAvailability, loadSlots,
-    selectService, selectDate, selectTime,
+    selectService, selectDate, selectTime, setModality,
     updatePatient, submitAppointment, goBack,
   }
 }

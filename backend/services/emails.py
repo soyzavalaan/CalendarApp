@@ -13,7 +13,7 @@ async def _send_email(to: str, subject: str, html: str):
             "https://api.resend.com/emails",
             headers={"Authorization": f"Bearer {settings.resend_api_key}"},
             json={
-                "from": f"{settings.professional_name} <citas@{settings.frontend_url.replace('https://', '').replace('http://', '').split('/')[0]}>",
+                "from": f"{settings.professional_name} <{settings.sender_email}>",
                 "to": [to],
                 "subject": subject,
                 "html": html,
@@ -60,7 +60,7 @@ async def send_confirmation_patient(appointment, service_name: str, cancel_url: 
         <tr><td style="padding:8px 0;color:#6b7280">Servicio</td><td style="padding:8px 0;font-weight:600">{service_name}</td></tr>
         <tr><td style="padding:8px 0;color:#6b7280">Fecha</td><td style="padding:8px 0;font-weight:600">{_format_date(appointment.appointment_date)}</td></tr>
         <tr><td style="padding:8px 0;color:#6b7280">Hora</td><td style="padding:8px 0;font-weight:600">{_format_time(appointment.appointment_time)}</td></tr>
-        <tr><td style="padding:8px 0;color:#6b7280">Modalidad</td><td style="padding:8px 0;font-weight:600">Presencial</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7280">Modalidad</td><td style="padding:8px 0;font-weight:600">{appointment.modality.capitalize()}</td></tr>
       </table>
       <div style="margin:24px 0;text-align:center">
         <a href="{cancel_url}" style="display:inline-block;padding:10px 24px;background:#dc2626;color:#fff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600">
@@ -131,3 +131,41 @@ async def send_cancellation_admin(appointment, service_name: str):
     </div>""")
 
     await _send_email(settings.notification_email, f"Cita Cancelada: {appointment.patient_name}", html)
+
+
+async def send_reschedule_patient(appointment, service_name: str, old_date, old_time):
+    html = _base_html(f"""
+    <div style="background:#f59e0b;padding:24px;text-align:center">
+      <h1 style="color:#fff;margin:0;font-size:22px">🔄 Cita Reagendada</h1>
+    </div>
+    <div style="padding:24px">
+      <p style="color:#374151;margin:0 0 16px">Hola <strong>{appointment.patient_name}</strong>, tu cita ha sido reagendada.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+        <tr><td style="padding:8px 0;color:#6b7280">Fecha anterior</td><td style="padding:8px 0;text-decoration:line-through">{_format_date(old_date)} a las {_format_time(old_time)}</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7280">Nueva fecha</td><td style="padding:8px 0;font-weight:600">{_format_date(appointment.appointment_date)}</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7280">Nueva hora</td><td style="padding:8px 0;font-weight:600">{_format_time(appointment.appointment_time)}</td></tr>
+      </table>
+    </div>""")
+
+    await _send_email(appointment.patient_email, "Cita Reagendada", html)
+
+
+async def send_reschedule_admin(appointment, service_name: str, old_date, old_time):
+    settings = get_settings()
+    if not settings.notification_email:
+        return
+
+    html = _base_html(f"""
+    <div style="background:#f59e0b;padding:24px;text-align:center">
+      <h1 style="color:#fff;margin:0;font-size:22px">🔄 Cita Reagendada</h1>
+    </div>
+    <div style="padding:24px">
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+        <tr><td style="padding:8px 0;color:#6b7280">Paciente</td><td style="padding:8px 0;font-weight:600">{appointment.patient_name}</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7280">Fecha anterior</td><td style="padding:8px 0;text-decoration:line-through">{_format_date(old_date)} a las {_format_time(old_time)}</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7280">Nueva fecha</td><td style="padding:8px 0;font-weight:600">{_format_date(appointment.appointment_date)}</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7280">Nueva hora</td><td style="padding:8px 0;font-weight:600">{_format_time(appointment.appointment_time)}</td></tr>
+      </table>
+    </div>""")
+
+    await _send_email(settings.notification_email, f"Cita Reagendada: {appointment.patient_name}", html)

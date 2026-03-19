@@ -64,6 +64,9 @@ class Appointment(Base):
     appointment_time = Column(Time, nullable=False)
     modality = Column(String(20), nullable=False, default="presencial")
     status = Column(String(20), nullable=False, default="confirmed")
+    payment_status = Column(String(20), nullable=False, default="pending")
+    payment_token = Column(String(16), nullable=False, default="")
+    payment_receipt_url = Column(Text, nullable=False, default="")
     cancellation_token = Column(String(64), nullable=False, default="", index=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 

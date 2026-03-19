@@ -63,6 +63,7 @@ class AppointmentCreate(BaseModel):
     patient_phone: str
     appointment_date: date
     appointment_time: time
+    modality: str = "presencial"
 
 
 class AppointmentOut(BaseModel):
@@ -76,6 +77,8 @@ class AppointmentOut(BaseModel):
     appointment_time: time
     modality: str
     status: str
+    payment_status: str
+    payment_token: str
     created_at: datetime
     service_name: Optional[str] = None
 
@@ -84,6 +87,16 @@ class AppointmentOut(BaseModel):
 
 class AppointmentStatusUpdate(BaseModel):
     status: str
+
+
+class RescheduleRequest(BaseModel):
+    appointment_date: date
+    appointment_time: time
+
+
+class PasswordResetRequest(BaseModel):
+    current_password: str
+    new_password: str
 
 
 # --- Auth ---

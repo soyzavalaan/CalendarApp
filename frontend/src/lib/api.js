@@ -40,6 +40,9 @@ export const createAppointment = (data) =>
 export const cancelAppointment = (token) =>
   request(`/appointments/cancel/${token}`, { method: 'POST' })
 
+export const rescheduleAppointment = (token, data) =>
+  request(`/appointments/reschedule/${token}`, { method: 'POST', body: JSON.stringify(data) })
+
 // --- Admin ---
 export const login = (email, password) =>
   request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) })
@@ -75,3 +78,23 @@ export const updateSchedule = (id, data) =>
 
 export const deleteSchedule = (id) =>
   request(`/admin/schedules/${id}`, { method: 'DELETE', headers: authHeaders() })
+
+export const adminRescheduleAppointment = (id, data) =>
+  request(`/admin/appointments/${id}/reschedule`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  })
+
+export const updatePaymentStatus = (id, status) =>
+  request(`/admin/appointments/${id}/payment?status=${status}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+  })
+
+export const changePassword = (currentPassword, newPassword) =>
+  request('/admin/password', {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+  })

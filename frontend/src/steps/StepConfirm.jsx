@@ -1,4 +1,4 @@
-export default function StepConfirm({ selected, onUpdatePatient, onSubmit, loading, error }) {
+export default function StepConfirm({ selected, onUpdatePatient, onSetModality, onSubmit, loading, error }) {
   function formatDate(dateStr) {
     const [y, m, d] = dateStr.split('-')
     return `${d}/${m}/${y}`
@@ -22,6 +22,31 @@ export default function StepConfirm({ selected, onUpdatePatient, onSubmit, loadi
         )}
         <p><span className="text-gray-500">Fecha:</span> {formatDate(selected.date)}</p>
         <p><span className="text-gray-500">Hora:</span> {selected.time}</p>
+      </div>
+
+      {/* Modalidad */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
+        <div className="flex gap-2">
+          {[
+            { value: 'presencial', label: 'Presencial', icon: '🏥' },
+            { value: 'virtual', label: 'Virtual', icon: '💻' },
+            { value: 'híbrida', label: 'Híbrida', icon: '🔄' },
+          ].map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onSetModality(opt.value)}
+              className={`flex-1 py-2 px-2 text-xs font-medium rounded-lg border transition-colors ${
+                selected.modality === opt.value
+                  ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+              }`}
+            >
+              {opt.icon} {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Datos del paciente */}

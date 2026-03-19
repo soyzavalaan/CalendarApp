@@ -11,9 +11,9 @@ class Settings(BaseSettings):
     admin_password_hash: str = ""
     resend_api_key: str = ""
     notification_email: str = ""
+    sender_email: str = "citas@resend.dev"
     frontend_url: str = "http://localhost:5173"
     professional_name: str = "Profesional"
-    firebase_credentials_path: str = "firebase-credentials.json"
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

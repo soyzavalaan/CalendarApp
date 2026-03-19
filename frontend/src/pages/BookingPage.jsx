@@ -27,6 +27,10 @@ export default function BookingPage() {
             <p><span className="text-gray-500">Servicio:</span> <strong>{b.result.service_name}</strong></p>
             <p><span className="text-gray-500">Fecha:</span> {formatDate(b.result.appointment_date)}</p>
             <p><span className="text-gray-500">Hora:</span> {b.result.appointment_time.slice(0, 5)}</p>
+            <p><span className="text-gray-500">Modalidad:</span> {b.result.modality}</p>
+            {b.result.payment_token && (
+              <p><span className="text-gray-500">Token de pago:</span> <strong className="font-mono text-emerald-700">{b.result.payment_token}</strong></p>
+            )}
           </div>
           <button
             onClick={() => window.location.reload()}
@@ -92,6 +96,7 @@ export default function BookingPage() {
             <StepConfirm
               selected={b.selected}
               onUpdatePatient={b.updatePatient}
+              onSetModality={b.setModality}
               onSubmit={b.submitAppointment}
               loading={b.loading}
               error={b.error}
